@@ -1,18 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using System;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Collections;
-using System.Text.Encodings.Web;
-using System.IO;
-using System.Threading;
-using USpeak;
-using System.Diagnostics;
-
+using Astronaut.API.BotServer;
 namespace Astronaut
 {
     public class BotHandler
@@ -20,7 +9,7 @@ namespace Astronaut
         #region Global Variables
 
         //public
-
+       
         public static Bot bot = new Bot();
 
         //Strings
@@ -43,13 +32,10 @@ namespace Astronaut
         //Private 
 
         //strings
-        private static string Cmd { get; set; }
+        public static string Cmd { get; set; }
         #endregion
-
-
         public static void DisplayLogo()
         {
-            
             Console.Title = $"Area 51 Photonbot *Astronaut* | OuterSpace {Environment.Version} | Fish, Silly & Josh";
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Green;
@@ -66,7 +52,7 @@ namespace Astronaut
             Console.WriteLine("                                I OR SOMEONE I'M CHILL WITH IS COOL WITH YOU, Congrats!                                 ");
             Console.WriteLine("                                              Here's A Fucking Cookie *                                                 ");
             Console.WriteLine("                                         The Developers's: Fish, Josh, Silly                                            ");
-            Console.WriteLine($"                                          Bot Version {Environment.Version}                                            ");
+            Console.WriteLine($"                                             Bot Version {Environment.Version}                                         ");
             Console.WriteLine("                                                                                                                        ");
             Console.WriteLine("                                                                                                                        ");
             Console.WriteLine("========================================================================================================================\n");
@@ -74,33 +60,36 @@ namespace Astronaut
 
         }
 
-        private static bool Check(string argument)
+        private static bool BotController(string argument)
         {
             string[] arguments = argument.Split('|');
-            if (arguments.Length > 1) // In your case if you are expecting 2 or more arguments
+            if (arguments.Length > 1) 
             {
-                userPass = arguments[0];
+               userPass = arguments[0];
                 region = arguments[1];
                 worldid = arguments[2];
                 AID = arguments[3];
                 UID = arguments[4];
                 POS = arguments[5];
                 _BotHandler(arguments[6]);
-                Console.WriteLine(arguments[6]);
+                Console.WriteLine($"[{DateTime.Now.ToString("hh:mm tt")} [{PhotonClient._botName}] Starting up....\n");
                 return true;
             }
             return false;
         }
 
-
         public static void Main(string[] args)
         {
+           
             foreach (var arg in args)
-            {
-                Check(arg);
-                if (!Check(arg))
-                {
-                    PhotonClient.Debuglog("Something Went Wrong");
+            { 
+                if (BotController(arg))
+                {                  
+                    BotController(arg);
+                    if (!BotController(arg))
+                    {
+                        PhotonClient.Debuglog("Something Went Wrong");
+                    }
                 }
             }
         }
@@ -112,43 +101,23 @@ namespace Astronaut
                 JObject config = JObject.Parse(wc.DownloadString("https://api.ripper.store/config"));
                 photon_server = config["photon_server"].ToString();
                 x_client_version = config["x_client_version"].ToString();
-
+                var WID = "";
+                if (worldid.Contains("~")) { WID = worldid.Substring(0, worldid.IndexOf("~") + 1).Replace("~", ""); } else { WID = worldid; }
                 switch (command)
                 {                   
                     case "JoinWorld":
                         bot.BotLogin(userPass, region);
                         DisplayLogo();
-                        System.Threading.Thread.Sleep(5000);
-                        //  IsEventNineCrash = true;
-                        PhotonClient.Debuglog($"Joining World[{region}]: " + worldid);
-                        bot.JoinRoom(worldid);                     
-                        Console.Read();
-                        return $"Joining World: {worldid}";
-                    case "AvatarCrash":
-                        bot.BotLogin(userPass, region);
-                        DisplayLogo();
-                        System.Threading.Thread.Sleep(5000);
-                        PhotonClient.Debuglog($"Joining World[{region}]: " + worldid);
+                        System.Threading.Thread.Sleep(2500);
+                        PhotonClient.Debuglog($"Joining World[{region}]: " + WID);
                         bot.JoinRoom(worldid);
-                        CrashNLeave = true;
+                        System.Threading.Thread.Sleep(2500);                    
                         Console.Read();
-                        return $"Joining World: {worldid}";
-                    case "KillWorld":
-                        bot.BotLogin(userPass, region);
-                        DisplayLogo();                  
-                        System.Threading.Thread.Sleep(5000);
-                        PhotonClient.Debuglog($"Joining World[{region}]: " + worldid);
-                        bot.JoinRoom(worldid);
-                        IsEventNineCrash = true;
-                        Console.Read();
-                        return $"Joining World: {worldid}";        
+                        return $"Joining World:" + WID + "\n";                  
                     default:                
                         return "N/A";
                 }
             }
         }
-
-
-
     }
 }
