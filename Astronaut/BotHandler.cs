@@ -7,33 +7,30 @@ namespace Astronaut
     public class BotHandler
     {
         #region Global Variables
-
-        //public
-       
+        //public     
         public static Bot bot = new Bot();
+        public static string AstronautLogo { get; set; }
 
         //Strings
-        public static string photon_server { get; set; }
-        public static string x_client_version { get; set; }
-        public static string userPass { get; set; }
-        public static string region { get; set; }
-        public static string worldid { get; set; }       
-        public static string AstronautLogo { get; set; }
-        public static string UID { get; set; }
-        public static string POS { get; set; }
-        public static string AID { get; set; }
-        public static bool CrashNLeave { get; set; }
+        public static string Photon_server { get; set; }
+        public static string X_client_version { get; set; }
 
+        public static string Userid { get; set; } //the person you would like to atatch to
+        public static string Avatarid { get; set; } // the avatar the bot will have.
+        public static string UserPass { get; set; } //Bot login Info
+        public static string Region { get; set; } //Region of world you are joining EX: USW
+        public static string Worldid { get; set; } // the world you wish to join.  
+        public static string Distance { get; set; } //how far the bots will be from you.
 
         //bools
+        public static bool CrashNLeave { get; set; }
         public static bool IsLogingAvatars { get; set; }
         public static bool IsEventNineCrash { get; set; }
 
-        //Private 
-
-        //strings
+        //Private strings
         public static string Cmd { get; set; }
         #endregion
+
         public static void DisplayLogo()
         {
             Console.Title = $"Area 51 Photonbot *Astronaut* | OuterSpace {Environment.Version} | Fish, Silly & Josh";
@@ -60,36 +57,27 @@ namespace Astronaut
 
         }
 
-        private static bool BotController(string argument)
-        {
-            string[] arguments = argument.Split('|');
-            if (arguments.Length > 1) 
-            {
-               userPass = arguments[0];
-                region = arguments[1];
-                worldid = arguments[2];
-                AID = arguments[3];
-                UID = arguments[4];
-                POS = arguments[5];
-                _BotHandler(arguments[6]);
-                Console.WriteLine($"[{DateTime.Now.ToString("hh:mm tt")} [{PhotonClient._botName}] Starting up....\n");
-                return true;
-            }
-            return false;
-        }
 
         public static void Main(string[] args)
         {
-           
-            foreach (var arg in args)
-            { 
-                if (BotController(arg))
-                {                  
-                    BotController(arg);
-                    if (!BotController(arg))
-                    {
-                        PhotonClient.Debuglog("Something Went Wrong");
-                    }
+            foreach (var arg in args) //for each pram passed in cmd 
+            {
+                string[] arguments = arg.Split('|');
+                if (arguments.Length > 1 && arguments != null)
+                {
+                    UserPass = arguments[0];
+                    Region = arguments[1];
+                    Worldid = arguments[2];
+                    Avatarid = arguments[3];
+                    Userid = arguments[4];
+                    Distance = arguments[5];
+                    _BotHandler(arguments[6]); //Command you wish to send to the handler.
+                    Console.WriteLine($"[{DateTime.Now.ToString("hh:mm tt")} {PhotonClient._botName}] Starting up....\n");
+                }
+                else
+                {
+                    Console.WriteLine("Something Went Wrong");
+                    Console.Read();
                 }
             }
         }
