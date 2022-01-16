@@ -14,9 +14,9 @@ namespace Astronaut
     {
         public static string _botName { get; set; }
         public static USpeakLite _uspeak { get; set; }
-        public string userID = BotHandler.UID;
-        public string AvatarID = BotHandler.AID;
-        public string posz = BotHandler.POS;
+        public string userID = BotHandler.Userid;
+        public string AvatarID = BotHandler.Avatarid;
+        public string posz = BotHandler.Distance;
 
         public static void Debuglog(string line)
         {
